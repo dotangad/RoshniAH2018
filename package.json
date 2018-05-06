@@ -1,0 +1,15 @@
+{
+  "name": "roshni",
+  "version": "0.0.1",
+  "main": "app.js",
+  "repository": "https://github.com/shaurya2109/RoshniAH2018.git",
+  "author": "Kabir Goel, Yashwardhann Kumar, Angad Singh",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "socket.io": "^2.1.0"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}

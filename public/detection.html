@@ -1,0 +1,69 @@
+<script>
+	var name = localStorage.getItem("name");
+	console.log(name);
+
+
+	var functions = [{
+		id: 0,
+		token: 'back',
+		msg: 'Main Menu',
+		task: 'open_menu',
+		target: '4.html'
+		},
+		{
+		id: 1,
+		token: 'notes',
+		msg: 'note down conversation',
+		task: 'open_notes',
+		target: 'notes.html'
+		}];
+
+			// new instance of speech recognition
+		var recognition = new webkitSpeechRecognition();
+		// set params
+		recognition.continuous = true;
+		recognition.interimResults = false;
+		recognition.start();
+
+		recognition.onresult = function(event){
+		  
+		  // delve into words detected results & get the latest
+		  // total results detected
+		  var resultsLength = event.results.length -1 ;
+		  // get length of latest results
+		  var ArrayLength = event.results[resultsLength].length -1;
+		  // get last word detected
+		  var saidWord = event.results[resultsLength][ArrayLength].transcript;
+		  
+		  // loop through links and match to word spoken
+		 console.log(saidWord);
+
+			var words = saidWord.split(" ");
+
+				for(var i = 0; i < words.length; i++) {
+						for(var j = 0; j < functions.length; j++) {
+							if(words[i] == functions[j].token) {
+								var msg = new SpeechSynthesisUtterance(functions[j].msg);
+								window.speechSynthesis.speak(msg);
+
+								window.location.href = functions[j].target;
+
+							}
+						}
+				}
+				}
+
+		// speech error handling
+		recognition.onerror = function(event){
+		  console.log('error?');
+		  console.log(event);
+		}
+</script>
+
+<link rel="stylesheet" href="css/main.css">
+
+<div class="frame">
+	<div id="screen">
+		<img src="name.png" alt="">
+	</div>
+</div>

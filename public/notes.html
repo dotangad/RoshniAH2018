@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script>
+			var name = localStorage.getItem("name");
+	console.log(name);
+
+
+	var functions = [{
+		id: 0,
+		token: 'back',
+		msg: 'Main Menu',
+		task: 'open_menu',
+		target: '4.html'
+		}];
+
+			// new instance of speech recognition
+		var recognition = new webkitSpeechRecognition();
+		// set params
+		recognition.continuous = true;
+		recognition.interimResults = false;
+		recognition.start();
+
+		recognition.onresult = function(event){
+		  
+		  // delve into words detected results & get the latest
+		  // total results detected
+		  var resultsLength = event.results.length -1 ;
+		  // get length of latest results
+		  var ArrayLength = event.results[resultsLength].length -1;
+		  // get last word detected
+		  var saidWord = event.results[resultsLength][ArrayLength].transcript;
+		  
+		  // loop through links and match to word spoken
+		 console.log(saidWord);
+
+			var words = saidWord.split(" ");
+
+				for(var i = 0; i < words.length; i++) {
+						for(var j = 0; j < functions.length; j++) {
+							if(words[i] == functions[j].token) {
+								var msg = new SpeechSynthesisUtterance(functions[j].msg);
+								window.speechSynthesis.speak(msg);
+
+								window.location.href = functions[j].target;
+
+							}
+						}
+				}
+				}
+
+		// speech error handling
+		recognition.onerror = function(event){
+		  console.log('error?');
+		  console.log(event);
+		}
+	</script>
+	<link rel="stylesheet" href="css/main.css">
+
+	<style>
+		.heading {
+			text-align: center;
+			margin-top: 40px;
+			font-size: 21px;
+		}
+		.line {
+			position: relative;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 50%;
+			margin-top: 10px;
+			height: 2px;
+			background: #333;
+			opacity: 0.3;
+		}
+		p {
+			text-align: center;
+		}
+	</style>
+
+
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="todo/nova/fonts/fonts.css" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="todo/css/css.css">
+    <link rel="stylesheet" href="todo/css/style.css">
+
+
+</head>
+
+<body><!-- 
+<div class="frame">
+	<div id="screen" style="background: #fff;">
+		<div class="heading">View Conversation</div>
+		<div class="line"></div>
+
+		<p id = "msg"></p>
+	</div>
+</div> -->
+
+  <body>
+    <div class="frame">
+    	<div class="filler"></div>
+    	<div class="header">
+    		<img src="todo/close.png" class="close">
+    		
+    	</div>
+	
+	<div class="hd"> <span style = "color: #29C5FF;">Notes</span> From Conversation</div>
+	<div class="line"></div>
+	
+	<ul class="tangle">
+	
+	<p id="msg" style="font-family: montserrat; font-size: 10pt; width: 65%; margin-left: 50%; transform: translateX(-50%); position: relative; top: 30px; background-color: #f7f7f7; border-radius: 6px; padding: 10px;"></p>
+
+	<div class="button" style="font-family: raleway; font-size: 9pt; margin-left:35px; top: 20px;">Continue</div>
+
+	</ul>
+
+
+    </div>
+
+
+
+
+
+</body>
+<script>
+	var word = localStorage.getItem("word");
+	console.log(word);
+
+	document.getElementById("msg").innerHTML = word;
+
+</script>
+
+
+
+
+
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+	<script src = "js/script.js"></script>	
+	<link rel="stylesheet" href="css/main.css">
+	
+	<script type="text/javascript" src="chu.js"></script>
+
+</head>
+
+
+
+<style>
+	input {
+		position: absolute;
+		bottom: -22px;
+		width: 100%;
+		box-sizing: border-box;
+		height: 50px;
+		border: 1px solid #ccc;
+		padding-left: 20px;
+
+	}
+
+	.msg {
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 90%;
+		height: 67px;
+		margin-top: 10px;
+		background: #eee;
+		border-radius: 10px;
+	}
+
+	#output {
+		position: absolute;
+		top: 123px;
+		left: 0;
+		width: 100%;
+		height: 69%;
+		background: #fff;
+	}
+	.tp {
+		position: relative;
+		text-align: center;
+		top: 50%;
+		left: 50%;
+		text-transform: capitalize;
+		font-size: 12px;
+
+		transform: translate(-50%,-50%);
+	}
+</style>
+
+<body>
+<div class="frame">
+	<div id="screen">
+	
+	<img src="m.png" alt="">
+
+
+
+  <input placeholder = "Your Message" type="text" id = "txt"> 
+		<button id = "send">Send</button>
+
+		<div id="output"></div>
+		<div id="typing"></div> 
+	</div>
+</div>
+
+<div class="kk" style="position: absolute; width: 15%; height: 100%; background: ; right: 0; top: 0;"></div>
+
+</body>
+
+
+</html>
+</body>
+<script>
+
+var socket = io.connect("http://localhost:8080");
+
+var bt = document.getElementById("send");
+var message = document.getElementById("txt"); 
+var output = document.getElementById("output");
+var handle = "Yash";
+
+	var name = localStorage.getItem("name");
+
+	var num_mess = 0;
+
+	console.log(name);
+
+	var msgs = [];
+
+
+	var functions = [{
+		id: 0,
+		token: 'scan',
+		msg: 'Opening camera for scanning',
+		task: 'open_ocr',
+		target: 'scan.html'
+	}, 
+	{
+		id: 1,
+		token: 'list',
+		msg: 'Opening your to do list',
+		task: 'open_todo',
+		target: 'todo/'
+	}, 
+	{
+		id: 2,
+		token: 'message',
+		msg: 'Opening messaging',
+		task: 'open_msg',
+		target: 'msg.html'
+	}];
+
+			// new instance of speech recognition
+		var recognition = new webkitSpeechRecognition();
+		// set params
+		recognition.continuous = true;
+		recognition.interimResults = false;
+		recognition.start();
+
+		recognition.onresult = function(event){
+		  
+		  // delve into words detected results & get the latest
+		  // total results detected
+		  var resultsLength = event.results.length -1 ;
+		  // get length of latest results
+		  var ArrayLength = event.results[resultsLength].length -1;
+		  // get last word detected
+		  var saidWord = event.results[resultsLength][ArrayLength].transcript;
+		  
+		  // loop through links and match to word spoken
+		 console.log(saidWord);
+
+		 
+
+		
+		 if(saidWord.trim() == "send") {
+		 num_mess++;	
+				socket.emit('chat', {
+					message: message.value,
+					handle: handle
+				}); 
+			
+		 } else {
+		 	 $('input').val(saidWord);
+		 }
+
+		socket.on('chat', function(data) {
+			if($('.msg').length < num_mess) {
+				output.innerHTML = output.innerHTML + "<div class = 'msg'> <div class = 'tp'>" + data.message + "</div></div>";
+			}
+		});
+
+
+
+
+
+
+		var words = saidWord.split(" ");
+
+				for(var i = 0; i < words.length; i++) {
+						for(var j = 0; j < functions.length; j++) {
+							if(words[i] == functions[j].token) {
+								var msg = new SpeechSynthesisUtterance(functions[j].msg);
+								window.speechSynthesis.speak(msg);
+
+								window.location.href = functions[j].target;
+
+							}
+						}
+				}
+
+
+		}
+
+		// speech error handling
+		recognition.onerror = function(event){
+		  console.log('error?');
+		  console.log(event);
+		}
+</script>
+</html>
